@@ -7,25 +7,22 @@ const api = axios.create({
  
 });
 
-// api.interceptors.request.use(
-//   (req) => {
-//     if (localStorage.getItem("profile")) {
-//       req.headers.Authorization = `Bearer ${
-//         JSON.parse(localStorage.getItem("profile")).authToken
-//       }`;
-//     }
-//     return req;
-//   },
-//   (error) => {
-//     return Promise.reject(error);
-//   }
-// );
+api.interceptors.request.use(
+  (config) => {
+    const accessToken = localStorage.getItem("accessToken");
+    if (accessToken) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
-api.defaults.withCredentials =true;
+// api.defaults.withCredentials =true;
 
-export const updateLogin = (factoryManager) => api.put(`furnishi/login`, factoryManager,{
-  withCredentials:false
-});
+export const updateLogin = (factoryManager) => api.put(`furnishi/login`, factoryManager);
 export const addSource = (sourceInfo) => api.post(`fm/source`, sourceInfo);
 export const getSource = () => api.get(`fm/source`);
 
