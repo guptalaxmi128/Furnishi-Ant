@@ -16,9 +16,9 @@ const PanelManager = () => {
           padding: "5px",
         }}
       >
-        <p style={{ fontSize: "22px" }}>Access Manager</p>
+        <p style={{ fontSize: "22px" }}>Panel Manager</p>
         <Breadcrumb style={{ margin: "22px 0" }}>
-          <Breadcrumb.Item>Access Manager</Breadcrumb.Item>
+          <Breadcrumb.Item>Panel Manager</Breadcrumb.Item>
           <Breadcrumb.Item>
             <a href="/factory">
               <HomeOutlined />

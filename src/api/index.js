@@ -10,9 +10,14 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     const accessToken = localStorage.getItem("accessToken");
+    const refreshToken=localStorage.getItem("refreshToken");
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
+    if (refreshToken) {
+      config.headers['Refresh-Token'] = `Bearer ${refreshToken}`
+    }
+
     return config;
   },
   (error) => {

@@ -8,6 +8,7 @@ export const updateLogin = (factoryManager) => async (dispatch) => {
         const { accessToken,refreshToken } = data;
         // Set the accessToken in localStorage
         console.log(accessToken)
+        console.log("refresh",refreshToken)
         localStorage.setItem("accessToken", accessToken);
         localStorage.setItem("refreshToken", refreshToken);
         dispatch({ type: UPDATE_FACTORY_MANAGER_LOGIN, payload: data });
