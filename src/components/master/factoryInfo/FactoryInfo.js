@@ -6,6 +6,7 @@ import {
   Row,
   Col,
   Form,
+  message
   //   Pagination,
 } from "antd";
 import { useDispatch } from "react-redux";
@@ -77,10 +78,25 @@ const FactoryInfo = (props) => {
 
   const [form] = Form.useForm();
 
-  const onFinish = (values) => {
-    console.log("Received values:", values);
-    // const res = dispatch(addFactory(values));
+  const onFinish = async (values) => {
+    try {
+      console.log("Received values:", values);
+      const res = await dispatch(addFactory(values));
+      if (res.success) {
+        message.success(res.message);
+        form.resetFields();
+      } else {
+        message.error(res.message || "An error occurred");
+      }
+    } catch (error) {
+      console.error("An unexpected error occurred:", error);
+      message.error(
+        error.response?.data?.message ||
+          "An unexpected error occurred. Please try again later."
+      );
+    }
   };
+  
 
   const validateContactNumber = (_, value) => {
     const regex = /^\d{10}$/;
@@ -153,7 +169,7 @@ const FactoryInfo = (props) => {
               name="gstNumber"
               rules={[{ required: true, message: "Please enter GST Number" }]}
             >
-              <Input type="number" placeholder="GST Number" />
+              <Input type="text" placeholder="GST Number" />
             </Form.Item>
           </Col>
           <Col lg={12} sm={24} xs={24} md={12}>
@@ -201,7 +217,15 @@ const FactoryInfo = (props) => {
             </Button>
         </Form.Item>
       </Form>
-      <Table dataSource={factoryTable} rowKey="id" pagination={false}  columns={columns}/>
+      {factoryTable?.length > 0 ? (
+        <Table
+          columns={columns}
+          dataSource={factoryTable}
+          rowKey="id"
+          pagination={{ pageSize: 5 }}
+          scroll={{ x: "max-content" }}
+        />
+      ) : null}
     </div>
   );
 };

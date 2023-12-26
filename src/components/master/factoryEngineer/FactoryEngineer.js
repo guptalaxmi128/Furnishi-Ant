@@ -1,16 +1,19 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Table, Input, Button, message, Form, Row, Col } from "antd";
 import { useDispatch } from "react-redux";
 import { addFactoryEngineer } from "../../../actions/master/factoryEngineer";
 
 const FactoryEngineer = (props) => {
   const dispatch = useDispatch();
-  const { factoryEngineers } = props;
-  const [factoryEngineersTable, setFactoryEngineersTable] = useState(
-    factoryEngineers || []
-  );
+  const { factoryEngineer } = props;
+  const [factoryEngineersTable, setFactoryEngineersTable] = useState([]);
 
   const [form] = Form.useForm();
+
+  useEffect(()=>{
+    if(factoryEngineer)
+setFactoryEngineersTable(factoryEngineer.data)
+  },[factoryEngineer])
 
   const onFinish = async (values) => {
     try {
@@ -21,11 +24,11 @@ const FactoryEngineer = (props) => {
         message.success(res.message);
         form.resetFields();
       } else {
-        message.error(res.message || "An error occurred");
+        message.error(res.message);
       }
     } catch (error) {
       console.error("Error:", error);
-      message.error(error.response.data.message);
+      message.error(error.response?.data?.message  || "An error occurred");
     }
   };
 
@@ -35,12 +38,7 @@ const FactoryEngineer = (props) => {
       dataIndex: "sno",
       key: "sno",
       align: "center",
-    },
-    {
-      title: "Factory Engineer Code",
-      dataIndex: "factoryEngineerCode",
-      key: "factoryEngineerCode",
-      align: "center",
+      render: (text, record, index) => index + 1,
     },
     {
       title: "Factory Engineer",

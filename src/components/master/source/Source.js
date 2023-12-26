@@ -84,11 +84,11 @@ const Source = (props) => {
         message.success(res.message);
         form.resetFields();
       } else {
-        message.error(res.message || 'An error occurred');
+        message.error(res.message);
       }
     } catch (error) {
       console.error('Error:', error);
-      message.error(error.response.data.message);
+      message.error(error.response.data.message  || 'An error occurred');
     }
   };
 
@@ -116,7 +116,7 @@ const Source = (props) => {
               label="Source"
               rules={[{ required: true, message: "Please enter source!" }]}
             >
-              <Input placeholder="Source" />
+              <Input placeholder="Source" className="custom-input" />
             </Form.Item>
           </Col>
           <Col lg={12} sm={24} xs={24} md={12}>
@@ -125,7 +125,7 @@ const Source = (props) => {
               label="Firm Name"
               rules={[{ required: true, message: "Please enter firm name!" }]}
             >
-              <Input placeholder="Firm Name" />
+              <Input placeholder="Firm Name"  className="custom-input" />
             </Form.Item>
           </Col>
         </Row>
@@ -139,7 +139,7 @@ const Source = (props) => {
                 { required: true, message: "Please enter firm address!" },
               ]}
             >
-              <Input placeholder="Firm Address" />
+              <Input placeholder="Firm Address"  className="custom-input" />
             </Form.Item>
           </Col>
 
@@ -155,7 +155,7 @@ const Source = (props) => {
                 },
               ]}
             >
-              <Input type="email" placeholder="Email" />
+              <Input type="email" placeholder="Email"  className="custom-input" />
             </Form.Item>
           </Col>
         </Row>
@@ -169,7 +169,7 @@ const Source = (props) => {
                 { validator: validateContactNumber },
               ]}
             >
-              <Input type="number" placeholder="Contact Number-1" />
+              <Input type="number" placeholder="Contact Number-1"  className="custom-input" />
             </Form.Item>
           </Col>
 
@@ -179,7 +179,7 @@ const Source = (props) => {
                 // { required: true, message: "Please enter contact number!" },
                 { validator: validateContactNumber },
               ]}>
-              <Input type="number" placeholder="Contact Number-2" />
+              <Input type="number" placeholder="Contact Number-2"  className="custom-input" />
             </Form.Item>
           </Col>
         </Row>
@@ -192,7 +192,7 @@ const Source = (props) => {
                 { required: true, message: "Please enter cordinator name!" },
               ]}
             >
-              <Input placeholder="Cordinator Name" />
+              <Input placeholder="Cordinator Name"  className="custom-input" />
             </Form.Item>
           </Col>
 
@@ -205,7 +205,7 @@ const Source = (props) => {
                 { validator: validateContactNumber },
               ]}
             >
-              <Input type="number" placeholder="Cordinator Number" />
+              <Input type="number" placeholder="Cordinator Number"  className="custom-input" />
             </Form.Item>
           </Col>
         </Row>

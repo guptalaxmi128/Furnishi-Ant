@@ -1,12 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Table, Input, Button, message, Form, Row, Col } from "antd";
 import { addShutter } from "../../../actions/master/shutter";
 import { useDispatch } from "react-redux";
 
 const Shutter = (props) => {
-  const dispatch=useDispatch();
-  const { shutters } = props;
-  const [shuttersTable, setShuttersTable] = useState(shutters || []);
+  const dispatch = useDispatch();
+  const { shutter } = props;
+  const [shuttersTable, setShuttersTable] = useState([]);
+
+  useEffect(() => {
+    if (shutter) setShuttersTable(shutter.data);
+  }, [shutter]);
 
   const [form] = Form.useForm();
 
@@ -19,11 +23,11 @@ const Shutter = (props) => {
         message.success(res.message);
         form.resetFields();
       } else {
-        message.error(res.message || 'An error occurred');
+        message.error(res.message);
       }
     } catch (error) {
-      console.error('Error:', error);
-      message.error(error.response.data.message);
+      console.error("Error:", error);
+      message.error(error.response?.data?.message || "An error occurred");
     }
   };
 
@@ -33,12 +37,7 @@ const Shutter = (props) => {
       dataIndex: "sno",
       key: "sno",
       align: "center",
-    },
-    {
-      title: "Shutter Code",
-      dataIndex: "shutterCode",
-      key: "shutterCode",
-      align: "center",
+      render: (text, record, index) => index + 1,
     },
     {
       title: "Shutter",
@@ -72,9 +71,9 @@ const Shutter = (props) => {
         <Row gutter={16}>
           <Col lg={12} sm={24} xs={24} md={12}>
             <Form.Item>
-            <Button className="default-btn" htmlType="submit">
-              Submit
-            </Button>
+              <Button className="default-btn" htmlType="submit">
+                Submit
+              </Button>
             </Form.Item>
           </Col>
         </Row>

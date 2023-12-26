@@ -1,16 +1,19 @@
-import React, { useState } from "react";
-import { Table, Input, Button,Form, Row, Col,message } from "antd";
+import React, { useState, useEffect } from "react";
+import { Table, Input, Button, Form, Row, Col, message } from "antd";
 import { useDispatch } from "react-redux";
 import { addSnagIssue } from "../../../actions/master/snagIssue";
 
 const SnagIssue = (props) => {
-  const dispatch=useDispatch();
-  const { snagIssues } = props;
-  const [snagIssuesTable, setSnagIssuesTable] = useState(snagIssues || []);
+  const dispatch = useDispatch();
+  const { snagIssue } = props;
+  const [snagIssuesTable, setSnagIssuesTable] = useState([]);
 
   const [form] = Form.useForm();
 
- 
+  useEffect(() => {
+    if (snagIssue) setSnagIssuesTable(snagIssue.data);
+  }, [snagIssue]);
+
   const onFinish = async (values) => {
     try {
       console.log("Received values:", values);
@@ -20,11 +23,11 @@ const SnagIssue = (props) => {
         message.success(res.message);
         form.resetFields();
       } else {
-        message.error(res.message || 'An error occurred');
+        message.error(res.message );
       }
     } catch (error) {
-      console.error('Error:', error);
-      message.error(error.response.data.message);
+      console.error("Error:", error);
+      message.error(error.response?.data?.message || "An error occurred");
     }
   };
 
@@ -34,15 +37,11 @@ const SnagIssue = (props) => {
       dataIndex: "sno",
       key: "sno",
       align: "center",
-    },
-    {
-      title: "Issue Code",
-      dataIndex: "issueCode",
-      key: "issueCode",
-      align: "center",
+      render: (text, record, index) => index + 1,
     },
     {
       title: "Issue",
+      dataIndex:"issue",
       key: "issue",
       align: "center",
     },
@@ -72,9 +71,9 @@ const SnagIssue = (props) => {
         <Row gutter={16}>
           <Col lg={12} sm={24} xs={24} md={12}>
             <Form.Item>
-            <Button className="default-btn" htmlType="submit">
-              Submit
-            </Button>
+              <Button className="default-btn" htmlType="submit">
+                Submit
+              </Button>
             </Form.Item>
           </Col>
         </Row>

@@ -1,12 +1,28 @@
-import React from "react";
+import React,{useEffect} from "react";
 import { Breadcrumb, Tabs, Card } from "antd";
 import { HomeOutlined } from "@ant-design/icons";
+import { useDispatch,useSelector } from "react-redux";
 import NewAssistantUser from "../panelManager/newAssistantUser/NewAssistantUser";
 import AllAssistantUsers from "./allAssistantUsers/AllAssistantUsers";
+import { getRoleAccess } from "../../actions/roleAccess/roleAccess";
+
 
 const { TabPane } = Tabs;
 
 const PanelManager = () => {
+  const dispatch=useDispatch();
+  const role = useSelector((state) => state.roleAccess.roleAccess);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await Promise.all([
+        dispatch(getRoleAccess()),
+       
+      ]);
+    };
+
+    fetchData();
+  }, [dispatch]);
   return (
     <div style={{ padding: "20px" }}>
       <div
@@ -26,10 +42,11 @@ const PanelManager = () => {
           </Breadcrumb.Item>
         </Breadcrumb>
       </div>
-      <Card>
+      <Card style={{padding:'24px'}}>
         <Tabs defaultActiveKey="1">
           <TabPane tab="New Assistant User" key="1">
-            <NewAssistantUser />
+          {role &&   <NewAssistantUser role={role} />}
+           
           </TabPane>
           <TabPane tab="All Assistant Users" key="2">
             <AllAssistantUsers />

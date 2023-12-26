@@ -1,14 +1,19 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Table, Input, Button, message, Form, Row, Col } from "antd";
 import { addDesigner } from "../../../actions/master/designer";
 import { useDispatch } from "react-redux";
 
 const Designer = (props) => {
   const dispatch=useDispatch();
-  const { designers } = props;
-  const [designersTable, setDesignersTable] = useState(designers || []);
+  const { designer } = props;
+  const [designersTable, setDesignersTable] = useState([]);
 
   const [form] = Form.useForm();
+
+  useEffect(()=>{
+  if(designer)
+  setDesignersTable(designer.data)
+  },[designer])
 
   const onFinish = async (values) => {
     try {
@@ -19,11 +24,11 @@ const Designer = (props) => {
         message.success(res.message);
         form.resetFields();
       } else {
-        message.error(res.message || 'An error occurred');
+        message.error(res.message );
       }
     } catch (error) {
       console.error('Error:', error);
-      message.error(error.response.data.message);
+      message.error(error.response?.data?.message || 'An error occurred');
     }
   };
 
@@ -33,12 +38,7 @@ const Designer = (props) => {
       dataIndex: "sno",
       key: "sno",
       align: "center",
-    },
-    {
-      title: "Designer Code",
-      dataIndex: "designerCode",
-      key: "designerCode",
-      align: "center",
+      render: (text, record, index) => index + 1,
     },
     {
       title: "Designer",

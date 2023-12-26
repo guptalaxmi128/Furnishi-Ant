@@ -27,7 +27,7 @@ const MyOrders = () => {
           </Breadcrumb.Item>
         </Breadcrumb>
       </div>
-      <Card>
+      <Card style={{padding:'24px'}}>
         <Tabs defaultActiveKey="1">
           <TabPane tab="New Order" key="1">
             <NewOrder />

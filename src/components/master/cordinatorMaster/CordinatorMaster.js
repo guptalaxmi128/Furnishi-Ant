@@ -9,6 +9,7 @@ import {
   Col,
   Space,
   Select,
+  message,
 } from "antd";
 import {
   addCordinator,
@@ -21,7 +22,6 @@ const CordinatorMaster = (props) => {
   const dispatch = useDispatch();
   const { source, cordinatorType, cordinator } = props;
   const [cordinatorTypes, setCordinatorTypes] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [sources, setSources] = useState([]);
   const [cordinatorsTable, setCordinatorsTable] = useState([]);
   const [selected, setSelected] = useState([]);
@@ -30,10 +30,8 @@ const CordinatorMaster = (props) => {
 
   useEffect(() => {
     if (source && cordinatorType) {
-      setLoading(true);
       setSources(source.data);
       setCordinatorTypes(cordinatorType.data);
-      setLoading(false);
     }
   }, [source, cordinatorType]);
 
@@ -44,19 +42,32 @@ const CordinatorMaster = (props) => {
   }, [cordinator]);
 
 
-
-  const onFinish = (values) => {
-    const data = {
-      sourceId: values.source,
-      cordinatorTypeId: values.cordinatorType,
-      emailId: values.emailId,
-      number: values.number,
-      name: values.name,
-    };
-    console.log("Received values:", data);
-    const res = dispatch(addCordinator(data));
-    console.log(res);
+  const onFinish = async (values) => {
+    try {
+      const data = {
+        sourceId: values.source,
+        cordinatorTypeId: values.cordinatorType,
+        emailId: values.emailId,
+        number: values.number,
+        name: values.name,
+      };
+  
+      console.log("Received values:", data);
+      const res = await dispatch(addCordinator(data));
+  
+      if (res.success) {
+        message.success(res.message);
+        form.resetFields();
+      } else {
+        message.error(res.message );
+      }
+    } catch (error) {
+      // Handle unexpected errors
+      console.error("An unexpected error occurred:", error);
+      message.error( error.response?.data?.message ||"An error occurred");
+    }
   };
+  
 
   const handleSourceChange = (value, option) => {
     const selectedSourceInfo = sources.find((source) => source.id === value);
@@ -69,74 +80,75 @@ const CordinatorMaster = (props) => {
 
 
   const columns = [
-    {
-      title: "Cordinator Code",
-      dataIndex: "cordinatorCode",
-      key: "cordinatorCode",
-      align: "center",
-    },
-    {
-      title: "Source Code",
-      dataIndex: "sourceCode",
-      key: "sourceCode",
-      align: "center",
-    },
+    // {
+    //   title: "Cordinator Code",
+    //   dataIndex: "id",
+    //   key: "id",
+    //   align: "center",
+    // },
+    // {
+    //   title: "Source Code",
+    //   dataIndex: ["source", "id"],
+    //   key: "sourceCode",
+    //   align: "center",
+    // },
     {
       title: "Source",
-      dataIndex: "source",
+      dataIndex: ["source", "source"],
       key: "source",
       align: "center",
     },
     {
       title: "Firm Name",
-      dataIndex: "firmName",
+      dataIndex: ["source", "firmName"],
       key: "firmName",
       align: "center",
     },
     {
       title: "Firm Address",
-      dataIndex: "firmAddress",
+      dataIndex: ["source", "firmAddress"],
       key: "firmAddress",
       align: "center",
     },
     {
       title: "Cordinator Type",
-      dataIndex: "cordinatorType",
+      dataIndex: ["cordinatorType", "cordinatorType"],
       key: "cordinatorType",
       align: "center",
     },
     {
       title: "Name",
-      dataIndex: "cordinatorName",
-      key: "cordinatorName",
+      dataIndex: "name",
+      key: "name",
       align: "center",
     },
     {
       title: "Number",
-      dataIndex: "cordinatorNumber",
-      key: "cordinatorNumber",
+      dataIndex: "number",
+      key: "number",
       align: "center",
     },
     {
       title: "Email Id",
-      dataIndex: "cordinatorEmailID",
-      key: "cordinatorEmailID",
+      dataIndex: "emailId",
+      key: "emailId",
       align: "center",
     },
-    {
-      title: "Action",
-      key: "action",
-      align: "center",
-      render: (text, record) => (
-        <Space size="middle">
-          <Checkbox
-            checked={selected.includes(record.id)}
-            onChange={(e) => handleCheckboxChange(e, record.id)}
-          />
-        </Space>
-      ),
-    },
+    // {
+    //   title: "Action",
+    //   key: "action",
+    //   align: "center",
+    //   render: (text, record) => (
+    //     <Space size="middle">
+    //       <Checkbox
+    //         checked={selected.includes(record.id)}
+    //         onChange={(e) => handleCheckboxChange(e, record.id)}
+    //       />
+    //     </Space>
+    //   ),
+    // },
   ];
+  
 
   const handleCheckboxChange = (e, id) => {
     const isChecked = e.target.checked;
@@ -266,13 +278,15 @@ const CordinatorMaster = (props) => {
           </Col>
         </Row>
       </Form>
-      <Table
-        columns={columns}
-        dataSource={cordinatorsTable}
-        rowKey="id"
-        pagination={{ pageSize: 5 }}
-        scroll={{ x: "max-content" }}
-      />
+       {cordinatorsTable?.length > 0 ? (
+        <Table
+          columns={columns}
+          dataSource={cordinatorsTable}
+          rowKey="id"
+          pagination={{ pageSize: 5 }}
+          scroll={{ x: "max-content" }}
+        />
+      ) : null}
     </>
   );
 };

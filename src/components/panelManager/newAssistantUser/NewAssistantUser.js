@@ -1,24 +1,20 @@
-import React, { useState } from "react";
-import {
-  Form,
-  Input,
-  Select,
-  DatePicker,
-  TimePicker,
-  Switch,
-  Button,
-  Row,
-  Col,
-} from "antd";
+import React, { useState, useEffect } from "react";
+import { Form, Input, Select, Checkbox, Button, Row, Col } from "antd";
 
 const { Option } = Select;
 
 const NewAssistantUser = (props) => {
-  const { panels = [], orderlists = [] } = props;
+  const { role, orderlists = [] } = props;
+  const [roles, setRoles] = useState([]);
   const [form] = Form.useForm();
+
+  useEffect(() => {
+    if (role && role.data) setRoles(role.data);
+  }, [role]);
 
   const onFinish = (values) => {
     console.log("received values");
+    
   };
   const validateContactNumber = (_, value) => {
     const regex = /^\d{10}$/;
@@ -27,6 +23,29 @@ const NewAssistantUser = (props) => {
     }
     return Promise.reject("Please enter a valid 10-digit contact number!");
   };
+
+
+  const renderCheckboxes = () => {
+    const selectedRoleId = form.getFieldValue("role");
+    console.log("Selected Role ID:", selectedRoleId);
+  
+    const selectedRole = roles.find((r) => r.id === selectedRoleId);
+    console.log("Selected Role:", selectedRole);
+  
+    const defaultPanelControl = selectedRole?.defaultPanelControl || {};
+  
+    return Object.entries(defaultPanelControl)
+      .filter(([key]) => !["id", "createdAt", "updatedAt"].includes(key))
+      .map(([key, value]) => (
+        <Col lg={12} sm={24} xs={24} md={12} key={key}>
+          <Form.Item name={key} valuePropName="checked" initialValue={value}>
+          <Checkbox  checked={value} /> &nbsp; {key}
+          </Form.Item>
+        </Col>
+      )); 
+  };
+  
+
   return (
     <Form
       form={form}
@@ -38,14 +57,14 @@ const NewAssistantUser = (props) => {
       <Row gutter={16}>
         <Col lg={12} sm={24} xs={24} md={12}>
           <Form.Item
-            label="Panel"
-            name="panel"
-            rules={[{ required: true, message: "Please select panel!" }]}
+            label="Role"
+            name="role"
+            rules={[{ required: true, message: "Please select role!" }]}
           >
-            <Select placeholder="Panel">
-              {panels.map((panel, index) => (
-                <Option key={index} value={panel.panel}>
-                  {panel.panel}
+            <Select placeholder="Role" >
+              {roles?.map((role, index) => (
+                <Option key={index} value={role.id}>
+                  {role.role}
                 </Option>
               ))}
             </Select>
@@ -94,52 +113,6 @@ const NewAssistantUser = (props) => {
           </Form.Item>
         </Col>
       </Row>
-      <Row gutter={16}>
-        <Col lg={12} sm={24} xs={24} md={12}>
-          <Form.Item
-            label="Password"
-            name="password"
-            rules={[
-              {
-                required: true,
-                message: "Password is required",
-              },
-              {
-                min: 6,
-                message: "Password must be at least 6 characters",
-              },
-            ]}
-          >
-            <Input.Password />
-          </Form.Item>
-        </Col>
-
-        <Col lg={12} sm={24} xs={24} md={12}>
-          <Form.Item
-            label="Confirm Password"
-            name="confirmPassword"
-            dependencies={["password"]}
-            rules={[
-              {
-                required: true,
-                message: "Please confirm your password",
-              },
-              ({ getFieldValue }) => ({
-                validator(_, value) {
-                  if (!value || getFieldValue("password") === value) {
-                    return Promise.resolve();
-                  }
-                  return Promise.reject(
-                    new Error("The two passwords do not match")
-                  );
-                },
-              }),
-            ]}
-          >
-            <Input.Password />
-          </Form.Item>
-        </Col>
-      </Row>
 
       <Row gutter={16}>
         <Col lg={12} sm={24} xs={24} md={12}>
@@ -158,11 +131,11 @@ const NewAssistantUser = (props) => {
           </Form.Item>
         </Col>
       </Row>
-
+      <Row gutter={16}>{renderCheckboxes()}</Row>
       <Form.Item>
-      <Button className="default-btn" htmlType="submit">
-              Submit
-            </Button>
+        <Button className="default-btn" htmlType="submit">
+          Submit
+        </Button>
       </Form.Item>
     </Form>
   );

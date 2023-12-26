@@ -1,12 +1,17 @@
-import React, { useState } from "react";
+import React, { useState ,useEffect} from "react";
 import { Table, Input, Button, Form, Row, Col,message } from "antd";
 import { addCarcass } from "../../../actions/master/carcass";
 import { useDispatch } from "react-redux";
 
 const Carcass = (props) => {
   const dispatch=useDispatch();
-  const { carcasses } = props;
-  const [carcassTable, setCarcassTable] = useState(carcasses || []);
+  const { carcass } = props;
+  const [carcassTable, setCarcassTable] = useState([]);
+
+  useEffect(() => {
+    if(carcass)
+  setCarcassTable(carcass.data)
+  }, [carcass])
 
   const [form] = Form.useForm();
 
@@ -19,11 +24,11 @@ const Carcass = (props) => {
         message.success(res.message);
         form.resetFields();
       } else {
-        message.error(res.message || 'An error occurred');
+        message.error(res.message);
       }
     } catch (error) {
       console.error('Error:', error);
-      message.error(error.response.data.message);
+      message.error(error.response?.data?.message || 'An error occurred');
     }
   };
 
@@ -34,15 +39,11 @@ const Carcass = (props) => {
       dataIndex: "sno",
       key: "sno",
       align: "center",
-    },
-    {
-      title: "Carcass Code",
-      dataIndex: "carcassCode",
-      key: "carcassCode",
-      align: "center",
+      render: (text, record, index) => index + 1,
     },
     {
       title: "Carcass",
+      dataIndex:'carcass',
       key: "carcass",
       align: "center",
     },

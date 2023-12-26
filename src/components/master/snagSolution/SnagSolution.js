@@ -1,14 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Table, Input, Button, message, Form, Row, Col } from "antd";
 import { useDispatch } from "react-redux";
 import { addSnagSolution } from "../../../actions/master/snagSolution";
 
 const SnagSolution = (props) => {
-  const dispatch=useDispatch();
-  const { snagSolutions } = props;
-  const [snagSolutionsTable, setSnagSolutionsTable] = useState(
-    snagSolutions || []
-  );
+  const dispatch = useDispatch();
+  const { snagSolution } = props;
+  const [snagSolutionsTable, setSnagSolutionsTable] = useState([]);
+
+  useEffect(() => {
+    if (snagSolution) setSnagSolutionsTable(snagSolution.data);
+  }, [snagSolution]);
 
   const [form] = Form.useForm();
 
@@ -21,10 +23,10 @@ const SnagSolution = (props) => {
         message.success(res.message);
         form.resetFields();
       } else {
-        message.error(res.message || 'An error occurred');
+        message.error(res.message || "An error occurred");
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.error("Error:", error);
       message.error(error.response.data.message);
     }
   };
@@ -35,15 +37,11 @@ const SnagSolution = (props) => {
       dataIndex: "sno",
       key: "sno",
       align: "center",
-    },
-    {
-      title: "Snag Solution Code",
-      dataIndex: "solutionCode",
-      key: "solutionCode",
-      align: "center",
+      render: (text, record, index) => index + 1,
     },
     {
       title: "Solution",
+      dataIndex: "solution",
       key: "solution",
       align: "center",
     },
@@ -73,9 +71,9 @@ const SnagSolution = (props) => {
         <Row gutter={16}>
           <Col lg={12} sm={24} xs={24} md={12}>
             <Form.Item>
-            <Button className="default-btn" htmlType="submit">
-              Submit
-            </Button>
+              <Button className="default-btn" htmlType="submit">
+                Submit
+              </Button>
             </Form.Item>
           </Col>
         </Row>

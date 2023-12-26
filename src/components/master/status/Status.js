@@ -1,12 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Table, Input, Button, Form, Row, Col, message } from "antd";
 import { useDispatch } from "react-redux";
 import { addStatus } from "../../../actions/master/status";
 
 const Status = (props) => {
-  const dispatch=useDispatch();
+  const dispatch = useDispatch();
   const { status } = props;
-  const [statusTable, setStatusTable] = useState(status || []);
+  const [statusTable, setStatusTable] = useState([]);
+
+  useEffect(() => {
+    if (status) setStatusTable(status.data);
+  }, [status]);
 
   const [form] = Form.useForm();
 
@@ -19,11 +23,11 @@ const Status = (props) => {
         message.success(res.message);
         form.resetFields();
       } else {
-        message.error(res.message || 'An error occurred');
+        message.error(res.message);
       }
     } catch (error) {
-      console.error('Error:', error);
-      message.error(error.response.data.message);
+      console.error("Error:", error);
+      message.error(error.response?.data?.message || "An error occurred");
     }
   };
 
@@ -33,15 +37,11 @@ const Status = (props) => {
       dataIndex: "sno",
       key: "sno",
       align: "center",
-    },
-    {
-      title: "Status Code",
-      dataIndex: "statusCode",
-      key: "statusCode",
-      align: "center",
+      render: (text, record, index) => index + 1,
     },
     {
       title: "Status",
+      dataIndex:"status",
       key: "status",
       align: "center",
     },
@@ -71,9 +71,9 @@ const Status = (props) => {
         <Row gutter={16}>
           <Col lg={12} sm={24} xs={24} md={12}>
             <Form.Item>
-            <Button className="default-btn" htmlType="submit">
-              Submit
-            </Button>
+              <Button className="default-btn" htmlType="submit">
+                Submit
+              </Button>
             </Form.Item>
           </Col>
         </Row>

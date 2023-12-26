@@ -1,12 +1,17 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Table, message, Input, Button, Row, Col, Form } from "antd";
 import { addLocation } from "../../../actions/master/location";
 import { useDispatch } from "react-redux";
 
 const Location = (props) => {
   const dispatch = useDispatch();
-  const { locations } = props;
-  const [locationsTable, setLocationsTable] = useState(locations || []);
+  const { location } = props;
+  const [locationsTable, setLocationsTable] = useState([]);
+
+  useEffect(() => {
+    if(location)
+  setLocationsTable(location.data)
+  }, [location])
 
   const [form] = Form.useForm();
 
@@ -19,11 +24,11 @@ const Location = (props) => {
         message.success(res.message);
         form.resetFields();
       } else {
-        message.error(res.message || "An error occurred");
+        message.error(res.message );
       }
     } catch (error) {
       console.error("Error:", error);
-      message.error(error.response.data.message);
+      message.error(error.response?.data?.message || "An error occurred");
     }
   };
 
@@ -33,6 +38,7 @@ const Location = (props) => {
       dataIndex: "sno",
       key: "sno",
       align: "center",
+      render: (text, record, index) => index + 1,
     },
     {
       title: "Pincode",
@@ -42,7 +48,8 @@ const Location = (props) => {
     },
     {
       title: "Location",
-      key: "location",
+      dataIndex:'name',
+      key: "name",
       align: "center",
     },
   ];

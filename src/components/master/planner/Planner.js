@@ -1,14 +1,19 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Table, Input, Button, message, Form, Row, Col } from "antd";
 import { addPlanner} from "../../../actions/master/planner";
 import { useDispatch } from "react-redux";
 
 const Planner = (props) => {
   const dispatch =useDispatch();
-  const { planners } = props;
-  const [plannersTable, setPlannersTable] = useState(planners || []);
+  const { planner } = props;
+  const [plannersTable, setPlannersTable] = useState([]);
 
   const [form] = Form.useForm();
+
+  useEffect(()=>{
+    if(planner)
+  setPlannersTable(planner.data)
+  },[planner])
 
   const onFinish = async (values) => {
     try {
@@ -19,11 +24,11 @@ const Planner = (props) => {
         message.success(res.message);
         form.resetFields();
       } else {
-        message.error(res.message || 'An error occurred');
+        message.error(res.message );
       }
     } catch (error) {
       console.error('Error:', error);
-      message.error(error.response.data.message);
+      message.error(error.response?.data?.message|| 'An error occurred');
     }
   };
 
@@ -34,12 +39,7 @@ const Planner = (props) => {
       dataIndex: "sno",
       key: "sno",
       align: "center",
-    },
-    {
-      title: "Planner Code",
-      dataIndex: "plannerCode",
-      key: "plannerCode",
-      align: "center",
+      render: (text, record, index) => index + 1,
     },
     {
       title: "Planner",

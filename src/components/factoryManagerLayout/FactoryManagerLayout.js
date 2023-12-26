@@ -20,6 +20,7 @@ import MyOrders from "../myOrders/MyOrders";
 import PanelManager from "../panelManager/PanelManager";
 import Snaglist from "../snaglist/Snaglist";
 import Settings from "../settings/Settings";
+import DefaultRoleAccess from "../defaultRoleAccess/DefaultRoleAccess";
 
 const { Header, Sider, Content, Footer } = Layout;
 const { SubMenu } = Menu;
@@ -153,13 +154,19 @@ const FactoryManagerLayout = () => {
     },
     {
       key: "8",
+      label: "Default Role Access",
+      icon: <BookOutlined />,
+      link: "/factory/default-role-access",
+    },
+    {
+      key: "9",
       label: "Settings",
       icon: <SettingOutlined />,
       link: "/factory/settings",
     },
 
     {
-      key: "9",
+      key: "10",
       label: "Logout",
       icon: <LogoutOutlined />,
       // onClick: handleLogout,
@@ -285,7 +292,7 @@ const FactoryManagerLayout = () => {
                   key={item.key}
                   icon={item.icon}
                   style={customMenuItemStyle}
-                  onClick={item.key === "12" ? item.onClick : null} //for side bar logout
+                  onClick={item.key === "10" ? item.onClick : null} //for side bar logout
                 >
                   <Link to={item.link} style={{ textDecoration: "none" }}>
                     {item.label}
@@ -334,6 +341,7 @@ const FactoryManagerLayout = () => {
               )}
               {location.pathname === "/factory/snaglist" && <Snaglist />}
               {location.pathname === "/factory/settings" && <Settings />}
+              {location.pathname === "/factory/default-role-access" && <DefaultRoleAccess />}
             </Content>
             <Footer style={{ textAlign: "center", fontFamily: "Rajdhani" }}>
               Furnishi Services by @ Tech Astute

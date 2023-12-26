@@ -17,7 +17,10 @@ import planner from "./master/planner";
 import location from "./master/location";
 import salesPerson from "./master/salesPerson";
 import shutter from "./master/shutter";
+import designer from "./master/designer";
 import factoryEngineer from "./master/factoryEngineer";
+import roleAccess from "./roleAccess/roleAccess";
+import assistantUser from "./panelManager/assistantUser";
 
 export const reducers = combineReducers({
   auth,
@@ -38,5 +41,8 @@ export const reducers = combineReducers({
   location,
   salesPerson,
   shutter,
-  factoryEngineer
+  designer,
+  factoryEngineer,
+  assistantUser,
+  roleAccess
 });

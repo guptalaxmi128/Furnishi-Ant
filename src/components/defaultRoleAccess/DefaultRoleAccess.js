@@ -1,14 +1,14 @@
 import React from "react";
-import { Breadcrumb, Tabs,Card } from "antd";
+import { Breadcrumb, Tabs, Card } from "antd";
 import { HomeOutlined } from "@ant-design/icons";
-import NewOrderList from "./newOrderList/NewOrderList";
-import OrderLists from "./orderLists/OrderLists";
+import CreateNewRole from "./createNewRole/CreateNewRole";
+
 
 const { TabPane } = Tabs;
 
-const OrderList = () => {
+const DefaultRoleAccess = () => {
   return (
-    <div style={{ padding:'20px' }}>
+    <div style={{ padding: "20px" }}>
       <div
         style={{
           display: "flex",
@@ -16,9 +16,9 @@ const OrderList = () => {
           padding: "5px",
         }}
       >
-        <p style={{ fontSize: "22px" }}>OrderList</p>
+        <p style={{ fontSize: "22px" }}>Default Role Access</p>
         <Breadcrumb style={{ margin: "22px 0" }}>
-          <Breadcrumb.Item>OrderList</Breadcrumb.Item>
+          <Breadcrumb.Item>Default Role Access</Breadcrumb.Item>
           <Breadcrumb.Item>
             <a href="/factory">
               <HomeOutlined />
@@ -26,20 +26,18 @@ const OrderList = () => {
           </Breadcrumb.Item>
         </Breadcrumb>
       </div>
-      <div >
-      <Card style={{padding:'24px'}}>
+      <Card>
         <Tabs defaultActiveKey="1">
-          <TabPane tab="New Order List" key="1">
-           <NewOrderList />
+          <TabPane tab="Create New Role" key="1">
+         <CreateNewRole />
           </TabPane>
-          <TabPane tab="Order Lists" key="2">
-          <OrderLists />
+          <TabPane tab="Manage Role" key="2">
+          
           </TabPane>
         </Tabs>
-        </Card>
-      </div>
+      </Card>
     </div>
   );
 };
 
-export default OrderList;
+export default DefaultRoleAccess;

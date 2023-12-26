@@ -1,16 +1,19 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Table, Input, Button, message, Form, Row, Col } from "antd";
 import { addFinalSiteSurveyor } from "../../../actions/master/finalSiteSurveyor";
 import { useDispatch } from "react-redux";
 
 const SiteSurveyor = (props) => {
   const dispatch=useDispatch();
-  const { siteSurveyors } = props;
-  const [siteSurveyorsTable, setSiteSurveyorsTable] = useState(
-    siteSurveyors || []
-  );
+  const { finalSiteSurveyor } = props;
+  const [siteSurveyorsTable, setSiteSurveyorsTable] = useState([]);
 
   const [form] = Form.useForm();
+
+  useEffect(() => {
+  if(finalSiteSurveyor)
+  setSiteSurveyorsTable(finalSiteSurveyor.data)
+  }, [finalSiteSurveyor])
 
   const onFinish = async (values) => {
     try {
@@ -21,11 +24,11 @@ const SiteSurveyor = (props) => {
         message.success(res.message);
         form.resetFields();
       } else {
-        message.error(res.message || 'An error occurred');
+        message.error(res.message);
       }
     } catch (error) {
       console.error('Error:', error);
-      message.error(error.response.data.message);
+      message.error(error.response?.data?.message || 'An error occurred');
     }
   };
 
@@ -35,17 +38,12 @@ const SiteSurveyor = (props) => {
       dataIndex: "sno",
       key: "sno",
       align: "center",
-    },
-    {
-      title: "Site Surveyor Code",
-      dataIndex: "finalSiteSurveyorCode",
-      key: "finalSiteSurveyorCode",
-      align: "center",
+      render: (text, record, index) => index + 1,
     },
     {
       title: "Site Surveyor",
-      dataIndex: "finalSiteSurveyor",
-      key: "finalSiteSurveyor",
+      dataIndex: "siteSurveyor",
+      key: "siteSurveyor",
       align: "center",
     },
   ];

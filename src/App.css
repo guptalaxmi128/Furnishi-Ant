@@ -126,6 +126,21 @@
   background-color: #888;
 }
 
+.custom-input {
+  height: 37px;
+}
+
+.blue-checkbox {
+  background-color: #284F49; 
+  color: white;
+  border-radius: 4px; 
+}
+
+.blue-checkbox input:checked {
+  background-color: #284F49; 
+  border-color: #284F49; 
+}
+
 
 
 

@@ -27,7 +27,11 @@ api.interceptors.request.use(
 
 // api.defaults.withCredentials =true;
 
-export const updateLogin = (factoryManager) => api.put(`furnishi/login`, factoryManager);
+// export const login = (factoryManager) => api.put(`furnishi/login`, factoryManager);
+export const signup = (userInfo) => api.post(`furnishi/signup`, userInfo);
+export const login = (userInfo) => api.put(`furnishi/sendOtp`, userInfo);
+export const VerifyOtp = (verifyOtp) => api.put(`furnishi/verifyOtp`, verifyOtp);
+
 export const addSource = (sourceInfo) => api.post(`fm/source`, sourceInfo);
 export const getSource = () => api.get(`fm/source`);
 
@@ -85,5 +89,11 @@ export const getShutter  = () => api.get(`fm/shutter`);
 
 export const addFactoryEngineer = (factoryEngineerInfo) => api.post(`fm/factoryEngineer`, factoryEngineerInfo);
 export const getFactoryEngineer = () => api.get(`fm/factoryEngineer`);
+
+export const addRoleAccess = (roleAccessInfo) => api.post(`fm/role`, roleAccessInfo);
+export const getRoleAccess = () => api.get(`fm/role`);
+
+export const addAssistantUser = (assistantUser) => api.post(`fm/assistantUser`, assistantUser);
+export const getAssistantUser = () => api.get(`fm/assistantUser`);
 
 

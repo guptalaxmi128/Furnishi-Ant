@@ -29,7 +29,7 @@ const Snaglist = () => {
         </Breadcrumb>
       </div>
       <div >
-      <Card>
+      <Card style={{padding:'24px'}}>
         <Tabs defaultActiveKey="1">
           <TabPane tab="New Snaglist" key="1">
             <NewSnaglist />

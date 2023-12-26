@@ -1,12 +1,17 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Table, Input, Button,Form, Row, Col,message} from "antd";
 import { addSnagCost } from "../../../actions/master/snagCost";
 import { useDispatch } from "react-redux";
 
 const SnagCost = (props) => {
   const dispatch=useDispatch();
-  const { snagCosts } = props;
-  const [snagCostsTable, setSnagCostsTable] = useState(snagCosts || []);
+  const { snagCost } = props;
+  const [snagCostsTable, setSnagCostsTable] = useState([]);
+
+  useEffect(() => {
+    if(snagCost)
+  setSnagCostsTable(snagCost.data)
+  }, [snagCost])
 
   const [form] = Form.useForm();
 
@@ -19,11 +24,11 @@ const SnagCost = (props) => {
         message.success(res.message);
         form.resetFields();
       } else {
-        message.error(res.message || 'An error occurred');
+        message.error(res.message);
       }
     } catch (error) {
       console.error('Error:', error);
-      message.error(error.response.data.message);
+      message.error(error.response?.data?.message || 'An error occurred');
     }
   };
   const columns = [
@@ -32,15 +37,11 @@ const SnagCost = (props) => {
       dataIndex: "sno",
       key: "sno",
       align: "center",
-    },
-    {
-      title: "Snag Cost Code",
-      dataIndex: "costCode",
-      key: "costCode",
-      align: "center",
+      render: (text, record, index) => index + 1,
     },
     {
       title: "Cost",
+      dataIndex:'cost',
       key: "cost",
       align: "center",
     },

@@ -1,13 +1,16 @@
-import React, { useState } from "react";
-import { Table, Input, Button, Form, Row, Col,message } from "antd";
+import React, { useState,useEffect } from "react";
+import { Table, Input, Button, Form, Row, Col, message } from "antd";
 import { useDispatch } from "react-redux";
 import { addSnagAction } from "../../../actions/master/snagAction";
 
-
 const SnagAction = (props) => {
-  const dispatch=useDispatch();
-  const { snagActions } = props;
-  const [snagActionsTable, setSnagActionsTable] = useState(snagActions);
+  const dispatch = useDispatch();
+  const { snagAction } = props;
+  const [snagActionsTable, setSnagActionsTable] = useState([]);
+
+  useEffect(() => {
+    if (snagAction) setSnagActionsTable(snagAction.data);
+  }, [snagAction]);
 
   const [form] = Form.useForm();
 
@@ -20,14 +23,13 @@ const SnagAction = (props) => {
         message.success(res.message);
         form.resetFields();
       } else {
-        message.error(res.message || 'An error occurred');
+        message.error(res.message);
       }
     } catch (error) {
-      console.error('Error:', error);
-      message.error(error.response.data.message);
+      console.error("Error:", error);
+      message.error(error.response?.data?.message || "An error occurred");
     }
   };
-
 
   const columns = [
     {
@@ -35,15 +37,11 @@ const SnagAction = (props) => {
       dataIndex: "sno",
       key: "sno",
       align: "center",
-    },
-    {
-      title: "Action Code",
-      dataIndex: "actionCode",
-      key: "actionCode",
-      align: "center",
+      render: (text, record, index) => index + 1,
     },
     {
       title: "Action",
+      dataIndex:"action",
       key: "action",
       align: "center",
     },
@@ -72,7 +70,7 @@ const SnagAction = (props) => {
       <Row gutter={16}>
         <Col lg={12} sm={24} xs={24} md={12}>
           <Form.Item>
-          <Button className="default-btn" htmlType="submit">
+            <Button className="default-btn" htmlType="submit">
               Submit
             </Button>
           </Form.Item>

@@ -7,7 +7,6 @@ const CordinatorType = (props) => {
   const { cordinatorType } = props;
   const dispatch = useDispatch();
   const [cordinatorTypesTable, setCordinatorTypesTable] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [form] = Form.useForm();
 
   const onFinish = async (values) => {
@@ -19,19 +18,18 @@ const CordinatorType = (props) => {
         message.success(res.message);
         form.resetFields();
       } else {
-        message.error(res.message || 'An error occurred');
+        message.error(res.message);
       }
     } catch (error) {
       console.error('Error:', error);
-      message.error(error.response.data.message);
+      message.error(error.response?.data?.message || 'An error occurred');
     }
   };
 
   useEffect(() => {
-    if (cordinatorType && cordinatorType.data) {
+    if (cordinatorType) 
       setCordinatorTypesTable(cordinatorType.data);
-    }
-    setLoading(false);
+    
   }, [cordinatorType]);
 
   const columns = [
@@ -48,19 +46,19 @@ const CordinatorType = (props) => {
       key: "cordinatorType",
       align: "center",
     },
-    {
-      title: "Action",
-      key: "action",
-      align: "center",
-      render: (text, record) => (
-        <Space size="middle">
-          <Checkbox
-          // checked={selected.includes(record.id)}
-          // onChange={(e) => handleCheckboxChange(e, record.id)}
-          />
-        </Space>
-      ),
-    },
+    // {
+    //   title: "Action",
+    //   key: "action",
+    //   align: "center",
+    //   render: (text, record) => (
+    //     <Space size="middle">
+    //       <Checkbox
+    //       // checked={selected.includes(record.id)}
+    //       // onChange={(e) => handleCheckboxChange(e, record.id)}
+    //       />
+    //     </Space>
+    //   ),
+    // },
   ];
 
   return (
@@ -100,7 +98,6 @@ const CordinatorType = (props) => {
           columns={columns}
           dataSource={cordinatorTypesTable}
           rowKey="id"
-          loading={loading}
           pagination={{ pageSize: 5 }}
           scroll={{ x: "max-content" }}
         />

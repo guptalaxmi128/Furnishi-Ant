@@ -1,16 +1,19 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Table, Input, Button, message, Form, Row, Col } from "antd";
 import { addSalesPerson } from "../../../actions/master/salesPerson";
 import { useDispatch } from "react-redux";
 
 const SalesPerson = (props) => {
   const dispatch =useDispatch();
-  const { salesPersons } = props;
-  const [salesPersonsTable, setSalesPersonsTable] = useState(
-    salesPersons || []
-  );
+  const { salesPerson } = props;
+  const [salesPersonsTable, setSalesPersonsTable] = useState([]);
 
   const [form] = Form.useForm();
+
+  useEffect(() => {
+    if(salesPerson)
+  setSalesPersonsTable(salesPerson.data)
+  }, [salesPerson])
 
   const onFinish = async (values) => {
     try {
@@ -21,11 +24,11 @@ const SalesPerson = (props) => {
         message.success(res.message);
         form.resetFields();
       } else {
-        message.error(res.message || 'An error occurred');
+        message.error(res.message);
       }
     } catch (error) {
       console.error('Error:', error);
-      message.error(error.response.data.message);
+      message.error(error.response?.data?.message || 'An error occurred');
     }
   };
 
@@ -35,15 +38,10 @@ const SalesPerson = (props) => {
       dataIndex: "sno",
       key: "sno",
       align: "center",
+      render: (text, record, index) => index + 1,
     },
     {
-      title: "Cordinator Type Code",
-      dataIndex: "salesPersonCode",
-      key: "salesPersonCode",
-      align: "center",
-    },
-    {
-      title: "Cordinator Type",
+      title: "Sales Person",
       dataIndex: "salesPerson",
       key: "salesPerson",
       align: "center",
