@@ -21,6 +21,9 @@ import designer from "./master/designer";
 import factoryEngineer from "./master/factoryEngineer";
 import roleAccess from "./roleAccess/roleAccess";
 import assistantUser from "./panelManager/assistantUser";
+import enquiry from "./enquiry/enquiry";
+import order from "./order/order";
+import dashboard from "./dashbard/dashboard";
 
 export const reducers = combineReducers({
   auth,
@@ -44,5 +47,8 @@ export const reducers = combineReducers({
   designer,
   factoryEngineer,
   assistantUser,
-  roleAccess
+  roleAccess,
+  enquiry,
+  order,
+  dashboard
 });

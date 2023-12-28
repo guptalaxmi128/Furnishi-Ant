@@ -1,14 +1,45 @@
-import React from "react";
+import React,{useEffect,useState} from "react";
 import { Card, Col, Row } from "antd";
 import { Breadcrumb } from "antd";
 import { HomeOutlined } from "@ant-design/icons";
+import { useDispatch,useSelector } from "react-redux";
+import { getEnquiryCount, getOrderCount } from "../../actions/dashboard/dashboard";
 
 const cardStyle = {
   marginBottom: "10px",
+  padding:'24px'
 };
 
-const Dashboard = () => (
-  <div style={{padding:'20px'}}>
+const Dashboard = () => {
+const dispatch=useDispatch();
+const [loading, setLoading] = useState(true);
+
+const orderCount = useSelector((state) => state.dashboard.orderCount);
+const enquiryCount = useSelector((state) => state.dashboard.enquiryCount);
+
+
+console.log(orderCount);
+console.log(enquiryCount)
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+
+      await Promise.all([
+        dispatch(getOrderCount("open")),
+        dispatch(getEnquiryCount("active"))
+      ]);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  fetchData();
+}, [dispatch]);
+
+return(<>
+    <div style={{padding:'20px'}}>
     <div
       style={{
         display: "flex",
@@ -26,6 +57,9 @@ const Dashboard = () => (
         </Breadcrumb.Item>
       </Breadcrumb>
     </div>
+    {loading ? (
+        <p>{loading}</p>
+      ) : (
     <div style={{ padding: "20px" }}>
     <h3>Hii Welcome back</h3>
       <Row gutter={16} justify="start">
@@ -35,7 +69,7 @@ const Dashboard = () => (
             bordered={false}
             style={{ background: "#fff2cd", ...cardStyle }}
           >
-            4
+            {orderCount?.data}
           </Card>
         </Col>
         <Col xs={{ span: 24 }} sm={{ span: 12 }} md={{ span: 6 }}>
@@ -44,7 +78,7 @@ const Dashboard = () => (
             bordered={false}
             style={{ background: "#feede7", ...cardStyle }}
           >
-            5
+            {enquiryCount?.enquiryCount}
           </Card>
         </Col>
         <Col xs={{ span: 24 }} sm={{ span: 12 }} md={{ span: 6 }}>
@@ -96,8 +130,10 @@ const Dashboard = () => (
         </Col>
        
       </Row>
-    </div>
+    </div>)}
   </div>
-);
+</>)
+
+    };
 
 export default Dashboard;

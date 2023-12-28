@@ -1,43 +1,65 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Form,
   Input,
   Select,
   DatePicker,
-  TimePicker,
-  Switch,
   Button,
   Row,
   Col,
+  message,
 } from "antd";
+import { addEnquiry } from "../../../actions/enquiry/enquiry";
+import { useDispatch } from "react-redux";
 
 const { Option } = Select;
 
 const NewEnquiry = (props) => {
   const {
-    cordinators,
-    products = [],
-    statusActions = [],
-    statuses = [],
-    carcasses = [],
-    shutters = [],
-    enquiryCosting,
+    product,
+    statusAction,
+    status,
+    carcass,
+    shutter,
+    // enquiryCosting,
   } = props;
+  const dispatch =useDispatch();
   const [form] = Form.useForm();
   const [enquiryType, setEnquiryType] = useState("");
-  const [amc, setAmc] = useState("");
+  const [products, setProducts] = useState([]);
+  const [shutters, setShutters] = useState([]);
+  const [carcasses, setCarcasses] = useState([]);
+  const [statusData, setStatusData] = useState([]);
+  const [statusActions, setStatusActions] = useState([]);
+  const [targetDate, setTargetDate] = useState(null);
+  const [workStartTime, setWorkStartTime] = useState(null);
+  const [workEndTime, setWorkEndTime] = useState(null);
+  const [dispatchData, setDispatchData] = useState(null);
+  const [amc, setAmc] = useState(null);
+
+  useEffect(() => {
+    if (status && product && shutter && statusAction && carcass) {
+      setProducts(product.data);
+      setStatusData(status.data);
+      setShutters(shutter.data);
+      setCarcasses(carcass.data);
+      setStatusActions(statusAction.data);
+    }
+  }, [status, product, shutter, statusAction, carcass]);
 
   const getEnquiryType = () => {
-    if (enquiryType === "installationEnquiry") {
+    if (enquiryType === "installation") {
       return (
         <Row gutter={[16, 16]}>
           <Col lg={12} sm={24} xs={24} md={12}>
-            <Form.Item label="Area (Sqft)" name="area"    rules={[{ required: true, message: "Please enter area!" }]}>
+            <Form.Item
+              label="Area (Sqft)"
+              name="installationArea"
+              rules={[{ required: true, message: "Please enter area!" }]}
+            >
               <Input
-                disabled={enquiryType === "surveyEnquiry"}
+                disabled={enquiryType === "survey"}
                 type="number"
-                // value={enquiry.area}
-                // onChange={handleChange}
                 placeholder="Area (Sqft)"
               />
             </Form.Item>
@@ -46,23 +68,19 @@ const NewEnquiry = (props) => {
       );
     }
 
-    if (enquiryType === "surveyEnquiry" || enquiryType === "complaintEnquiry") {
+    if (enquiryType === "survey" || enquiryType === "complaint") {
       return (
         <Row gutter={[16, 16]}>
           <Col lg={12} sm={24} xs={24} md={12}>
             <Form.Item
               label="Product"
-              name="product"
+              name="productId"
               rules={[{ required: true, message: "Please select product!" }]}
             >
-              <Select
-              placeholder="Product"
-              // value={enquiry.product}
-              // onChange={handleProductChange}
-              >
-                {products.map((product) => (
-                  <Option key={product.name} value={product.name}>
-                    {product.name}
+              <Select placeholder="Product">
+                {products?.map((product) => (
+                  <Option key={product.product} value={product.id}>
+                    {product.product}
                   </Option>
                 ))}
               </Select>
@@ -87,9 +105,48 @@ const NewEnquiry = (props) => {
     setAmc(value);
   };
 
-  const onFinish = (values) => {
-    console.log("received values");
+  const onFinish = async (values) => {
+    try {
+      // console.log("received values", values);
+      const data = {
+        targetDate: targetDate,
+        sitePincode: values.sitePincode,
+        statusId: values.statusId,
+        carcassId: values.carcassId,
+        shutterId: values.shutterId,
+        dispatch: dispatchData,
+        workStartTime: workStartTime,
+        workEndTime: workEndTime,
+        estimate: values.estimate,
+        statusActionId: values.statusActionId,
+        deepClean: values.deepClean === "Yes",
+        liveStream: values.liveStream === "Yes",
+        installationRecording: values.installationRecording === "Yes",
+        amc: amc === "Yes",
+        amcData: values.amcData,
+        enquiryType: values.enquiryType,
+        installationArea: values.installationArea,
+        productId: values.productId,
+      };
+      console.log(data);
+      const res = await dispatch(addEnquiry(data));
+      if(res.success){
+        message.success(res.message)
+        form.resetFields();
+        setTargetDate(null);
+        setDispatchData(null);
+        setWorkEndTime(null);
+        setWorkEndTime(null);
+      }else{
+        message.error(res.message)
+      }
+    } catch (error) {
+      console.error("Error adding enquiry:", error);
+      message.error(error.response?.data?.message || "An error occured");
+    }
   };
+  // console.log(products);
+
   return (
     <Form
       form={form}
@@ -100,8 +157,18 @@ const NewEnquiry = (props) => {
     >
       <Row gutter={16}>
         <Col lg={12} sm={24} xs={24} md={12}>
-          <Form.Item label="Target Date" name="targetDate" rules={[{ required: true, message: "Please select target date!" }]}>
-            <DatePicker style={{ width: "100%" }} />
+          <Form.Item
+            label="Target Date"
+            name="targetDate"
+            rules={[{ required: true, message: "Please select target date!" }]}
+          >
+            <DatePicker
+              style={{ width: "100%" }}
+              onChange={(date, dateString) => {
+                setTargetDate(dateString);
+              }}
+              format="YYYY-MM-DD"
+            />
           </Form.Item>
         </Col>
         <Col lg={12} sm={24} xs={24} md={12}>
@@ -119,12 +186,12 @@ const NewEnquiry = (props) => {
         <Col lg={12} sm={24} xs={24} md={12}>
           <Form.Item
             label="Status"
-            name="status"
+            name="statusId"
             rules={[{ required: true, message: "Please select status!" }]}
           >
             <Select placeholder="Status">
-              {statuses.map((status) => (
-                <Option key={status.status} value={status.status}>
+              {statusData?.map((status) => (
+                <Option key={status.status} value={status.id}>
                   {status.status}
                 </Option>
               ))}
@@ -135,12 +202,12 @@ const NewEnquiry = (props) => {
         <Col lg={12} sm={24} xs={24} md={12}>
           <Form.Item
             label="Carcass"
-            name="carcass"
+            name="carcassId"
             rules={[{ required: true, message: "Please select carcass!" }]}
           >
             <Select placeholder="Carcass">
-              {carcasses.map((carcass) => (
-                <Option key={carcass.carcass} value={carcass.carcass}>
+              {carcasses?.map((carcass) => (
+                <Option key={carcass.carcass} value={carcass.id}>
                   {carcass.carcass}
                 </Option>
               ))}
@@ -152,12 +219,12 @@ const NewEnquiry = (props) => {
         <Col lg={12} sm={24} xs={24} md={12}>
           <Form.Item
             label="Shutter"
-            name="shutter"
+            name="shutterId"
             rules={[{ required: true, message: "Please select shutter!" }]}
           >
             <Select placeholder="Shutter">
-              {shutters.map((shutter) => (
-                <Option key={shutter.shutter} value={shutter.shutter}>
+              {shutters?.map((shutter) => (
+                <Option key={shutter.shutter} value={shutter.id}>
                   {shutter.shutter}
                 </Option>
               ))}
@@ -171,7 +238,13 @@ const NewEnquiry = (props) => {
             name="dispatch"
             rules={[{ required: true, message: "Please select dispatch!" }]}
           >
-            <DatePicker style={{ width: "100%" }} />
+            <DatePicker
+              style={{ width: "100%" }}
+              onChange={(date, dateString) => {
+                setDispatchData(dateString);
+              }}
+              format="YYYY-MM-DD"
+            />
           </Form.Item>
         </Col>
       </Row>
@@ -184,15 +257,12 @@ const NewEnquiry = (props) => {
               { required: true, message: "Please select work start time!" },
             ]}
           >
-            <TimePicker
+            <DatePicker
               style={{ width: "100%" }}
-              //   value={enquiry.workStartTime}
-              //   onChange={(newValue) => {
-              //     setEnquiry({
-              //       ...enquiry,
-              //       workStartTime: newValue,
-              //     });
-              //   }}
+              onChange={(date, dateString) => {
+                setWorkStartTime(dateString);
+              }}
+              format="YYYY-MM-DD"
             />
           </Form.Item>
         </Col>
@@ -205,7 +275,13 @@ const NewEnquiry = (props) => {
               { required: true, message: "Please select work end time!" },
             ]}
           >
-            <TimePicker style={{ width: "100%" }} />
+            <DatePicker
+              style={{ width: "100%" }}
+              onChange={(date, dateString) => {
+                setWorkEndTime(dateString);
+              }}
+              format="YYYY-MM-DD"
+            />
           </Form.Item>
         </Col>
       </Row>
@@ -217,19 +293,19 @@ const NewEnquiry = (props) => {
             name="estimate"
             rules={[{ required: true, message: "Please enter estimate!" }]}
           >
-            <Input placeholder="Estimate" />
+            <Input type="number" placeholder="Estimate" />
           </Form.Item>
         </Col>
 
         <Col lg={12} sm={24} xs={24} md={12}>
           <Form.Item
             label="Action"
-            name="action"
+            name="statusActionId"
             rules={[{ required: true, message: "Please select action!" }]}
           >
             <Select placeholder="Action">
-              {statusActions.map((status) => (
-                <Option key={status.statusAction} value={status.statusAction}>
+              {statusActions?.map((status) => (
+                <Option key={status.statusAction} value={status.id}>
                   {status.statusAction}
                 </Option>
               ))}
@@ -254,7 +330,7 @@ const NewEnquiry = (props) => {
         <Col lg={12} sm={24} xs={24} md={12}>
           <Form.Item
             label="Live Streaming"
-            name="liveStreaming"
+            name="liveStream"
             rules={[
               { required: true, message: "Please select live streaming!" },
             ]}
@@ -311,9 +387,9 @@ const NewEnquiry = (props) => {
               value={enquiryType}
               onChange={handleChange}
             >
-              <Option value="installationEnquiry">Installation Enquiry</Option>
-              <Option value="surveyEnquiry">Survey Enquiry</Option>
-              <Option value="complaintEnquiry">Complaint Enquiry</Option>
+              <Option value="installation">Installation Enquiry</Option>
+              <Option value="survey">Survey Enquiry</Option>
+              <Option value="complaint">Complaint Enquiry</Option>
             </Select>
           </Form.Item>
         </Col>
@@ -338,7 +414,7 @@ const NewEnquiry = (props) => {
       </Row>
 
       <Form.Item>
-      <Button className="default-btn" htmlType="submit">
+        <Button className="default-btn" htmlType="submit">
           Submit
         </Button>
       </Form.Item>

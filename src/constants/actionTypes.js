@@ -13,6 +13,8 @@ export const GET_CORDINATOR_TYPE = 'GET_CORDINATOR_TYPE';
 export const ADD_CORDINATOR = 'ADD_CORDINATOR';
 export const GET_CORDINATOR = 'GET_CORDINATOR';
 
+export const GET_CORDINATOR_BY_ID = 'GET_CORDINATOR_BY_ID';
+
 export const ADD_FACTORY = 'ADD_FACTORY';
 export const GET_FACTORY = 'GET_FACTORY';
 
@@ -66,3 +68,12 @@ export const GET_ROLE_ACCESS = 'GET_ROLE_ACCESS';
 
 export const ADD_ASSISTANT_USER = 'ADD_ASSISTANT_USER';
 export const GET_ASSISTANT_USER = 'GET_ASSISTANT_USER';
+
+export const ADD_ENQUIRY = 'ADD_ENQUIRY';
+export const GET_ENQUIRY = 'GET_ENQUIRY';
+
+export const ADD_ORDER = 'ADD_ORDER';
+export const GET_ORDER = 'GET_ORDER';
+
+export const GET_ORDER_COUNT = 'GET_ORDER_COUNT';
+export const GET_ENQUIRY_COUNT = 'GET_ENQUIRY_COUNT';

@@ -2,6 +2,7 @@ import * as actionTypes from "../../constants/actionTypes";
 
 const initialState = {
   cordinator: [],
+  cordinatorById:[],
   state: "idle",
   error: null,
   success:null
@@ -19,6 +20,11 @@ export const cordinatorReducer = (state = initialState, action) => {
           ...state,
           cordinator: action.payload,
         };
+        case actionTypes.GET_CORDINATOR_BY_ID:
+          return {
+            ...state,
+            cordinatorById: action.payload,
+          };
     //     case actionTypes.DELETE_ASSIGNMENT:
     //       const assignmentIdToDelete = action.payload;
     //       return {

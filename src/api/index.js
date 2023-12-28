@@ -29,7 +29,7 @@ api.interceptors.request.use(
 
 // export const login = (factoryManager) => api.put(`furnishi/login`, factoryManager);
 export const signup = (userInfo) => api.post(`furnishi/signup`, userInfo);
-export const login = (userInfo) => api.put(`furnishi/sendOtp`, userInfo);
+export const login = (userInfo) => api.post(`furnishi/sendOtp`, userInfo);
 export const VerifyOtp = (verifyOtp) => api.put(`furnishi/verifyOtp`, verifyOtp);
 
 export const addSource = (sourceInfo) => api.post(`fm/source`, sourceInfo);
@@ -40,6 +40,7 @@ export const getCordinatorType = () => api.get(`fm/cordinatorType`);
 
 export const addCordinator = (cordinator) => api.post(`fm/cordinator`, cordinator);
 export const getCordinator = () => api.get(`fm/cordinator`);
+export const getCordinatorById = (cordinatorTypeId) => api.get(`fm/cordinator?cordinatorTypeId=${cordinatorTypeId}`);
 
 export const addFactory = (factoryInfo) => api.post(`fm/factory`, factoryInfo);
 export const getFactory = () => api.get(`fm/factory`);
@@ -96,4 +97,16 @@ export const getRoleAccess = () => api.get(`fm/role`);
 export const addAssistantUser = (assistantUser) => api.post(`fm/assistantUser`, assistantUser);
 export const getAssistantUser = () => api.get(`fm/assistantUser`);
 
+export const addEnquiry = (enquiryInfo) => api.post(`fm/enquiry`, enquiryInfo);
+export const getEnquiry= () => api.get(`fm/enquiry`);
+
+export const addOrder = (formData) => api.post(`fm/order`, formData, {
+  headers: {
+    'Content-Type': 'multipart/form-data',
+  },
+});
+export const getOrder= (orderStatus) => api.get(`fm/order?orderStatus=${orderStatus}`);
+
+export const getOrderCount= (orderStatus) => api.get(`fm/orderCount?orderStatus=${orderStatus}`);
+export const getEnquiryCount= (orderStatus) => api.get(`fm/enquiryCount?orderStatus=${orderStatus}`);
 

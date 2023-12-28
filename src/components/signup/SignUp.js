@@ -5,16 +5,12 @@ import image1 from "../../assets/img/image1.jpg";
 import image2 from "../../assets/img/image2.webp";
 import { useDispatch } from "react-redux";
 import { useNavigate,Link } from "react-router-dom";
+import "../../components/login/Login.css";
 
 const SignUp = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-
-  const cardStyle = {
-    padding: 0,
-    borderRadius: "0 0 8px 8px",
-  };
 
 
   const onFinish = async (values) => {
@@ -43,15 +39,9 @@ const SignUp = () => {
 
   return (
     <div
-      style={{
-        backgroundColor: "#284F49",
-        height: "100vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
+      className="login-container"
     >
-      <Card className="login-container" style={cardStyle}>
+      <Card   className="login-subcontainer">
         <Row>
           <Col lg={12} sm={24} xs={24}>
             <Carousel autoplay autoplaySpeed={2000}>

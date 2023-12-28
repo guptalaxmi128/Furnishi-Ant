@@ -1,45 +1,34 @@
-import React from "react";
+import React,{useEffect,useState} from "react";
 import { Table } from "antd";
+import { useDispatch,useSelector } from "react-redux";
+import moment from "moment";
+import { getOrder } from "../../../actions/order/order";
 
 const OrderClosed = () => {
-  const data = [
-    {
-      key: "1",
-      orderId: "ORD123",
-      name: "John Doe",
-      number: "1234567890",
-      address: "123 Main St",
-      pincode: "12345",
-      locationCode: "LOC456",
-      customerCordinator: "Customer Coordinator 1",
-      customerCordinatorNumber: "9876543210",
-      sourceCordinator: "Source Coordinator 1",
-      sourceCordinatorNumber: "8765432109",
-      factoryCordinator: "Factory Coordinator 1",
-      factoryCordinatorNumber: "7654321098",
-      product: "Product 1",
-      productId: "PROD001",
-      productCode: "P001",
-      saleValue: "₹5000",
-      materialValue: "₹2000",
-      faceArea: "100 sqft",
-      targetStartDate: "2023-12-01",
-      targetEndDate: "2023-12-15",
-      startDate: "2023-12-02",
-      endDate: "2023-12-20",
-      totalService: 5,
-      serviceDone: 3,
-      servicePending: 2,
-      serviceCalendar: "Link to Calendar",
-      estimatedCost: "₹4000",
-      actualCost: "₹3500",
-      attachment: "Link to Attachment",
-      transactionHistory: "Link to History",
-      expenseTillDate: "₹1000",
-      status: "In Progress",
-      estimatedQuoteAfterDiscount: "₹3800",
-    },
-  ];
+  const dispatch=useDispatch();
+  const [orders,setOrders]=useState([]);
+  const [loading,setLoading]=useState(false);
+  const order = useSelector((state) => state.order.order);
+  console.log(order)
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true); 
+        await Promise.all([dispatch(getOrder("close"))]);
+        const filteredOrders = order.data.filter(item => item.orderStatus === "close");
+        setOrders(filteredOrders);
+      } catch (error) {
+        console.error("Error fetching enquiry data:", error);
+      } finally {
+        setLoading(false); 
+      }
+    };
+
+    fetchData();
+  }, [dispatch]);
+
+ console.log(orders)
 
   const columns = [
     {
@@ -55,8 +44,8 @@ const OrderClosed = () => {
     },
     {
       title: "Number",
-      dataIndex: "number",
-      key: "number",
+      dataIndex: "mobileNumber",
+      key: "mobileNumber",
     },
     {
       title: "Address",
@@ -67,56 +56,74 @@ const OrderClosed = () => {
       title: "Pincode",
       dataIndex: "pincode",
       key: "pincode",
+      render: (text, record) => {
+        return record.location.pincode;
+      }
     },
     {
-      title: "Location Code",
-      dataIndex: "locationCode",
-      key: "locationCode",
+      title: "Location",
+      dataIndex: "location",
+      key: "location",
+      render: (location) => location.name,
     },
     {
-      title: "Customer Cordinator",
-      dataIndex: "customerCordinator",
-      key: "customerCordinator",
+      title: "Customer Cordinator Name",
+      dataIndex: "customerCordinatorName",
+      key: "customerCordinatorName",
+      render: (text, record) => {
+        return record.customerCordinator.name;
+      }
     },
     {
       title: "Customer Cordinator Number",
       dataIndex: "customerCordinatorNumber",
       key: "customerCordinatorNumber",
+      render: (text, record) => {
+        return record.customerCordinator.number;
+      }
     },
     {
       title: "Source Cordinator",
       dataIndex: "sourceCordinator",
       key: "sourceCordinator",
+      render: (text, record) => {
+        return record.sourceCordinator.name;
+      }
     },
     {
       title: "Source Cordinator Number",
       dataIndex: "sourceCordinatorNumber",
       key: "sourceCordinatorNumber",
+      render: (text, record) => {
+        return record.sourceCordinator.number;
+      }
     },
     {
       title: "Factory Cordinator",
       dataIndex: "factoryCordinator",
       key: "factoryCordinator",
+      render: (text, record) => {
+        return record.factoryCordinator.name;
+      }
     },
     {
       title: "Factory Cordinator Number",
       dataIndex: "factoryCordinatorNumber",
       key: "factoryCordinatorNumber",
+      render: (text, record) => {
+        return record.factoryCordinator.number;
+      }
     },
     {
       title: "Product",
       dataIndex: "product",
       key: "product",
+      render: (product) => product.product,
     },
     {
       title: "Product Id",
       dataIndex: "productId",
       key: "productId",
-    },
-    {
-      title: "Product Code",
-      dataIndex: "productCode",
-      key: "productCode",
     },
     {
       title: "Sale Value",
@@ -137,21 +144,33 @@ const OrderClosed = () => {
       title: "Target Start Date",
       dataIndex: "targetStartDate",
       key: "targetStartDate",
+      render: (targetStartDate) => {
+        return targetStartDate ? moment(targetStartDate).format("DD-MM-YYYY") : "";
+      },
     },
     {
       title: "Target End Date",
       dataIndex: "targetEndDate",
       key: "targetEndDate",
+      render: (targetEndDate) => {
+        return targetEndDate ? moment(targetEndDate).format("DD-MM-YYYY") : "";
+      },
     },
     {
       title: "Start Date",
       dataIndex: "startDate",
       key: "startDate",
+      render: (startDate) => {
+        return startDate ? moment(startDate).format("DD-MM-YYYY") : "";
+      },
     },
     {
       title: "End Date",
       dataIndex: "endDate",
       key: "endDate",
+      render: (endDate) => {
+        return endDate ? moment(endDate).format("DD-MM-YYYY") : "";
+      },
     },
     {
       title: "Total Service",
@@ -170,8 +189,8 @@ const OrderClosed = () => {
     },
     {
       title: "Service Calendar",
-      dataIndex: "serviceCalendar",
-      key: "serviceCalendar",
+      dataIndex: "serviceCalender",
+      key: "serviceCalender",
     },
     {
       title: "Estimated Cost",
@@ -187,12 +206,18 @@ const OrderClosed = () => {
       title: "Attachment",
       dataIndex: "attachment",
       key: "attachment",
+      render: (text, record) => {
+        const filePath = record.attachment || "";
+        const parts = filePath.split("/");
+        const fileName = parts.length > 0 ? parts.pop() : "No Attachment";
+        return fileName;
+      }
     },
-    {
-      title: "Transaction History",
-      dataIndex: "transactionHistory",
-      key: "transactionHistory",
-    },
+    // {
+    //   title: "Transaction History",
+    //   dataIndex: "transactionHistory",
+    //   key: "transactionHistory",
+    // },
     {
       title: "Expense Till Date",
       dataIndex: "expenseTillDate",
@@ -202,6 +227,7 @@ const OrderClosed = () => {
       title: "Status",
       dataIndex: "status",
       key: "status",
+      render: (status) => status.status,
     },
     {
       title: "Estimated Quote after Discount",
@@ -209,12 +235,13 @@ const OrderClosed = () => {
       key: "estimatedQuoteAfterDiscount",
     },
   ];
-  return(
+
+  return (
     <div style={{ overflowX: "auto" }}>
-    <Table dataSource={data} columns={columns} />
-  </div>
-  )
- 
+      {" "}
+      <Table dataSource={orders} columns={columns} loading={loading} />
+    </div>
+  );
 };
 
 export default OrderClosed;

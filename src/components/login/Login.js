@@ -18,7 +18,7 @@ const Login = () => {
     try {
       const data = {
         emailId: values.emailId,
-        password: values.password,
+        // password: values.password,
         role: "factoryManager",
       };
       console.log("Received values:", data);
@@ -27,7 +27,7 @@ const Login = () => {
       const res = await dispatch(login(data));
 
       message.success(res.message);
-      navigate("/verify-otp");
+      navigate("/verify-otp", { state: { emailId: values.emailId } });
       // navigate("/factory")
     } catch (error) {
       console.error("Error updating login:", error);
@@ -39,22 +39,10 @@ const Login = () => {
 
   return (
     <div
-      style={{
-        backgroundColor: "#284F49",
-        height: "100vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
+     className="login-container"
     >
       <Card
-        // style={{
-        //   width: "80%",
-        //   backgroundColor: "white",
-        //   height: "80vh",
-        //   padding: "0px",
-        // }}
-        className="login-container"
+      className="login-subcontainer"
       >
         <Row>
           <Col lg={12} sm={24} xs={24}>
